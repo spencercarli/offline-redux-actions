@@ -3,13 +3,29 @@ import { View, Text, ScrollView, NetInfo } from 'react-native';
 import { List, ListItem, Icon } from 'react-native-elements'
 import { connect } from 'react-redux';
 
-import { requestPerson, connectionState } from './actions';
+import { requestPerson, requestPersonByUrl, connectionState } from './actions';
 
 class NameList extends Component {
   componentDidMount() {
+    const { dispatch, actionQueue } = this.props;
     NetInfo.isConnected.addEventListener('change', (isConnected) => {
-      this.props.dispatch(connectionState({ status: isConnected }));
+      dispatch(connectionState({ status: isConnected }));
+      this._makeOfflineRequests({ isConnected, actionQueue });
     });
+  }
+
+  componentWillReceiveProps({ isConnected, actionQueue }) {
+    if (isConnected !== this.props.isConnected) {
+      this._makeOfflineRequests({ isConnected, actionQueue });
+    }
+  }
+
+  _makeOfflineRequests({ isConnected, actionQueue }) {
+    if (isConnected && actionQueue.length > 0) {
+      actionQueue.forEach((url) => {
+        this.props.dispatch(requestPersonByUrl({ url }));
+      });
+    }
   }
 
   render() {
@@ -44,6 +60,8 @@ const mapStateToProps = (state) => {
   return {
     people: state.people,
     personIndex: state.personIndex,
+    actionQueue: state.actionQueue,
+    isConnected: state.isConnected,
   };
 };
 

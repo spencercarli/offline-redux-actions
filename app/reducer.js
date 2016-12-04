@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const initialState = {
   personIndex: 1,
   people: [],
@@ -23,8 +25,12 @@ const reducer = (state = initialState, action) =>{
       return Object.assign({}, state, {
         actionQueue: state.actionQueue.concat([action.payload]),
       });
+    case 'REMOVE_FROM_ACTION_QUEUE':
+      return Object.assign({}, state, {
+        actionQueue: _.without(state.actionQueue, action.payload),
+      });
     default:
-      return state
+      return state;
   }
 }
 
