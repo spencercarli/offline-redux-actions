@@ -45,7 +45,7 @@ class NameList extends Component {
         </ScrollView>
         <Icon
           raised
-          name='add'
+          name={this.props.isConnected ? 'add' : 'alarm-add'}
           color='#51b9d3'
           reverse
           onPress={() => this.props.dispatch(requestPerson({ index: this.props.personIndex }))}
