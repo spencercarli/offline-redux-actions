@@ -2,6 +2,7 @@ const initialState = {
   personIndex: 1,
   people: [],
   actionQueue: [],
+  isConnected: false,
 };
 
 const reducer = (state = initialState, action) =>{
@@ -13,6 +14,10 @@ const reducer = (state = initialState, action) =>{
     case 'SAVE_PERSON':
       return Object.assign({}, state, {
         people: [action.person].concat(state.people),
+      });
+    case 'CHANGE_CONNECTION_STATUS':
+      return Object.assign({}, state, {
+        isConnected: action.isConnected,
       });
     case 'ADD_TO_ACTION_QUEUE':
       return Object.assign({}, state, {
