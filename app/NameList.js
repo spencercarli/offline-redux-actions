@@ -7,26 +7,23 @@ import { requestPerson, requestPersonByUrl, connectionState } from './actions';
 
 class NameList extends Component {
   componentDidMount() {
+    NetInfo.isConnected.addEventListener('change', this._handleConnectionChange);
+  }
+
+  componentWillUnmount() {
+    NetInfo.isConnected.removeEventListener('change', this._handleConnectionChange);
+  }
+
+  _handleConnectionChange = (isConnected) => {
     const { dispatch, actionQueue } = this.props;
-    NetInfo.isConnected.addEventListener('change', (isConnected) => {
-      dispatch(connectionState({ status: isConnected }));
-      this._makeOfflineRequests({ isConnected, actionQueue });
-    });
-  }
+    dispatch(connectionState({ status: isConnected }));
 
-  componentWillReceiveProps({ isConnected, actionQueue }) {
-    if (isConnected !== this.props.isConnected) {
-      this._makeOfflineRequests({ isConnected, actionQueue });
-    }
-  }
-
-  _makeOfflineRequests({ isConnected, actionQueue }) {
     if (isConnected && actionQueue.length > 0) {
       actionQueue.forEach((url) => {
         this.props.dispatch(requestPersonByUrl({ url }));
       });
     }
-  }
+  };
 
   render() {
     return (

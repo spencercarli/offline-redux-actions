@@ -1,13 +1,11 @@
 import { NetInfo } from 'react-native';
 
-export const requestPerson = ({ index = 1, url }) => {
+export const requestPerson = ({ index = 1 }) => {
   return (dispatch, getState) => {
     const { isConnected } = getState();
 
     dispatch({ type: 'INC_PERSON_INDEX' });
-    if (!url) {
-      url = `https://swapi.co/api/people/${index}?format=json`;
-    }
+    const url = `https://swapi.co/api/people/${index}?format=json`;
     if (isConnected) {
       fetch(url)
         .then((res) => res.json())
